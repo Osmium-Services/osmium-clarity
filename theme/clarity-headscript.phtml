@@ -2,12 +2,14 @@
 // own <head> template. Expects $site (for the environment check) and $clarity
 // (this service's config, injected by the loader) in the render context.
 //
+// This service requires Cookie Consent to be installed (service.json
+// requires.services), but has no PHP-level coupling to it.
+//
 // Consent: Clarity is told consent is denied up front (consentv2), so it sets
 // no cookies and treats each page view as its own session. It is granted only
 // if window.OsmiumCookieConsent.cookieName (or the default cookie name) reads
 // 'accepted'. Cookie Consent's accept/reject buttons fire an
-// 'osmium:consent' event, which this block listens for to update live. With no consent service present it stays
-// denied, so this errs towards not tracking. ?>
+// 'osmium:consent' event, which this block listens for to update live. ?>
 <?php
 // $clarity is read from the loader context, not via ClarityConfig::get(), so a
 // class that can't be autoloaded renders nothing instead of crashing the page.

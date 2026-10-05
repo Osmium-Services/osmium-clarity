@@ -1,8 +1,8 @@
 {
     "id": "clarity",
     "name": "Microsoft Clarity",
-    "version": "1.0.0",
-    "description": "Microsoft Clarity heatmaps and session recordings - free, consent-gated, gated on an admin-editable toggle and production-only",
+    "version": "1.1.0",
+    "description": "Microsoft Clarity heatmaps and session recordings - free, consent-gated, gated on an admin-editable toggle and production-only; requires the Cookie Consent service",
     "category": "marketing-analytics",
     "author": {
         "name": "Gavin Cox"
@@ -11,7 +11,7 @@
     "requires": {
         "osmium": ">=1.0.0",
         "php": ">=8.1",
-        "services": []
+        "services": ["cookie-consent"]
     },
     "autoload": [
         "models"
@@ -58,6 +58,6 @@
         ]
     },
     "setup": {
-        "postInstallNote": "Disabled by default. A theme must call ServiceThemeBlocks::render('head', ['site' => $site]) in its <head> template before enabling this does anything visible. Needs a consent tool: Clarity gets consent denied until a cookie named osmium_cookie_consent (or window.OsmiumCookieConsent.cookieName) reads 'accepted' - the Cookie Consent service does this. Clarity's own Cookies setting should also be off for no cookies before consent."
+        "postInstallNote": "Disabled by default. A theme must call ServiceThemeBlocks::render('head', ['site' => $site]) in its <head> template before enabling this does anything visible. Requires Cookie Consent (installed with this service, but disabled by default - enable it too): Clarity gets consent denied until a cookie named osmium_cookie_consent (or window.OsmiumCookieConsent.cookieName) reads 'accepted'. Clarity's own Cookies setting should also be off for no cookies before consent."
     }
 }
