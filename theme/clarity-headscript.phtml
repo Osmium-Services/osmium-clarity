@@ -1,0 +1,76 @@
+<?php // Included via ServiceThemeBlocks::render('head', [...]) by a real theme's
+// own <head> template. Expects $site (for the environment check) and $clarity
+// (this service's config, injected by the loader) in the render context.
+//
+// Consent: Clarity is told consent is denied up front (consentv2), so it sets
+// no cookies and treats each page view as its own session. It is granted only
+// if window.OsmiumCookieConsent.cookieName (or the default cookie name) reads
+// 'accepted'. Cookie Consent's accept/reject buttons fire an
+// 'osmium:consent' event, which this block listens for to update live. With no consent service present it stays
+// denied, so this errs towards not tracking. ?>
+<?php
+// $clarity is read from the loader context, not via ClarityConfig::get(), so a
+// class that can't be autoloaded renders nothing instead of crashing the page.
+$clarityEnabled = $clarity['enabled'] ?? false;
+$projectId = (string) ($clarity['projectId'] ?? '');
+$projectIdValid = \preg_match(pattern: '/^[a-z0-9]{8,12}$/i', subject: $projectId) === 1; // Same rule as ClarityConfig::isValidProjectId()
+$isProduction = !\in_array($site['environment'] ?? '', ['dev', 'staging'], true);
+$shouldLoad = $clarityEnabled && $projectIdValid && $isProduction; // Clarity only on production
+?>
+<?php if ($shouldLoad): ?>
+    <link rel="preconnect" href="https://www.clarity.ms" />
+    <!-- Microsoft Clarity (deferred until idle or first interaction; consent denied until accepted) -->
+    <script>
+        (function(w, d, s, projectId) {
+            if (w.clarity) return;
+            w.clarity = function() {
+                (w.clarity.q = w.clarity.q || []).push(arguments);
+            };
+
+            var granted = false;
+            var cookieName = (w.OsmiumCookieConsent && w.OsmiumCookieConsent.cookieName) || 'osmium_cookie_consent';
+            if (cookieName) {
+                var m = d.cookie.match(new RegExp('(?:^|; )' + cookieName + '=([^;]*)'));
+                granted = !!m && decodeURIComponent(m[1]) === 'accepted';
+            }
+            var state = granted ? 'granted' : 'denied';
+            w.clarity('consentv2', {
+                ad_Storage: state,
+                analytics_Storage: state
+            });
+
+            d.addEventListener('osmium:consent', function(e) {
+                var v = e.detail && e.detail.value === 'accepted' ? 'granted' : 'denied';
+                w.clarity('consentv2', {
+                    ad_Storage: v,
+                    analytics_Storage: v
+                });
+            });
+
+            var loaded = false;
+
+            function load() {
+                if (loaded) return;
+                loaded = true;
+                var t = d.createElement(s),
+                    f = d.getElementsByTagName(s)[0];
+                t.async = true;
+                t.src = 'https://www.clarity.ms/tag/' + projectId;
+                f.parentNode.insertBefore(t, f);
+                events.forEach(function(e) {
+                    w.removeEventListener(e, load);
+                });
+                clearTimeout(idleTimer);
+            }
+            var events = ['scroll', 'click', 'keydown', 'touchstart', 'mousemove'];
+            events.forEach(function(e) {
+                w.addEventListener(e, load, {
+                    passive: true,
+                    once: true
+                });
+            });
+            var idleTimer = setTimeout(load, 5000);
+        })(window, document, 'script', '<?php echo \htmlspecialchars($projectId, ENT_QUOTES); ?>');
+    </script>
+    <!-- End Microsoft Clarity -->
+<?php endif; ?>

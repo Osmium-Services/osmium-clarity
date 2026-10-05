@@ -1,0 +1,63 @@
+{
+    "id": "clarity",
+    "name": "Microsoft Clarity",
+    "version": "1.0.0",
+    "description": "Microsoft Clarity heatmaps and session recordings - free, consent-gated, gated on an admin-editable toggle and production-only",
+    "category": "marketing-analytics",
+    "author": {
+        "name": "Gavin Cox"
+    },
+    "license": "proprietary",
+    "requires": {
+        "osmium": ">=1.0.0",
+        "php": ">=8.1",
+        "services": []
+    },
+    "autoload": [
+        "models"
+    ],
+    "csp": {
+        "script-src": [
+            "https://www.clarity.ms",
+            "https://*.clarity.ms"
+        ],
+        "connect-src": [
+            "https://*.clarity.ms",
+            "https://c.bing.com"
+        ]
+    },
+    "admin": {
+        "menu": {
+            "section": "Content",
+            "items": [
+                {
+                    "id": "clarity",
+                    "label": "Microsoft Clarity",
+                    "icon": "bx bx-line-chart",
+                    "route": "admin/settings/clarity",
+                    "activePattern": "admin/settings/clarity",
+                    "role": null
+                }
+            ]
+        },
+        "routes": {
+            "admin/settings/clarity": {
+                "controller": "controllers/ClarityController.php",
+                "class": "Osmium\\Services\\Clarity\\Controllers\\ClarityController",
+                "method": "index",
+                "title": "Microsoft Clarity"
+            }
+        }
+    },
+    "frontend": {
+        "themeBlocks": [
+            {
+                "hook": "head",
+                "file": "theme/clarity-headscript.phtml"
+            }
+        ]
+    },
+    "setup": {
+        "postInstallNote": "Disabled by default. A theme must call ServiceThemeBlocks::render('head', ['site' => $site]) in its <head> template before enabling this does anything visible. Needs a consent tool: Clarity gets consent denied until a cookie named osmium_cookie_consent (or window.OsmiumCookieConsent.cookieName) reads 'accepted' - the Cookie Consent service does this. Clarity's own Cookies setting should also be off for no cookies before consent."
+    }
+}
