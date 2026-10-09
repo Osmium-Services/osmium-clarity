@@ -22,7 +22,7 @@ $shouldLoad = $clarityEnabled && $projectIdValid && $isProduction; // Clarity on
 <?php if ($shouldLoad): ?>
     <link rel="preconnect" href="https://www.clarity.ms" />
     <!-- Microsoft Clarity (deferred until idle or first interaction; consent denied until accepted) -->
-    <script>
+    <script nonce="<?= $cspNonce ?? '' ?>">
         (function(w, d, s, projectId) {
             if (w.clarity) return;
             w.clarity = function() {

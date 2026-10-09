@@ -1,7 +1,7 @@
 {
     "id": "clarity",
     "name": "Microsoft Clarity",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Microsoft Clarity heatmaps and session recordings - free, consent-gated, gated on an admin-editable toggle and production-only; requires the Cookie Consent service",
     "category": "marketing-analytics",
     "author": {
