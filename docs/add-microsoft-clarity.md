@@ -1,6 +1,7 @@
 ---
 title: Add Microsoft Clarity heatmaps and recordings
 tags: clarity, microsoft, heatmaps, session recordings, analytics, consent
+page: admin/settings/clarity
 ---
 
 **Microsoft Clarity** records heatmaps and how visitors use your pages. It is free. Cookies and cross-page tracking wait until the visitor accepts cookies, so the **Cookie Consent** service must be installed.
